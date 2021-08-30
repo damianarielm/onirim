@@ -65,7 +65,7 @@ def descartarCarta(carta, mazo, mano, descarte):
 
 def rellenarMano(mano, mazo, puertas, descarte):
     limbo = []
-    while len(mano) < 5:
+    while len(mano) < 5 and mazo:
         carta = mazo.pop()
         if carta[0] == puerta:
             limbo += manejarPuerta(mano, mazo, puertas, carta[1])
@@ -151,4 +151,4 @@ while len(puertas) != 8:
 
     rellenarMano(mano, mazo, puertas, descarte)
 
-print("Ganaste!")
+print("\nGanaste!")
