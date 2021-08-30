@@ -44,12 +44,12 @@ def menuDeJuego(mazo, puertas, laberinto, mano):
 
 def jugarCarta(laberinto, mano, mazo, carta):
     if not laberinto or carta[0] != laberinto[-1][0]:
-        laberinto += [carta]
         mano.remove(carta)
+        laberinto += [carta]
 
-def manejarProfecia(mazo):
+def manejarProfecia(mazo, descarte):
     mostrarPila("\nMazo", mazo[-5:])
-    mazo.pop(int(input("Descarte una carta del mazo: ")) - 6)
+    descarte += [mazo.pop(int(input("Descarte una carta del mazo: ")) - 6)]
     mostrarPila("\nMazo", mazo[-4:])
 
     indices = input("Ingrese el orden de las cartas: ")
@@ -57,26 +57,28 @@ def manejarProfecia(mazo):
     for i, j in enumerate(indices):
         mazo[-i - 1] = tmp[-5 + int(j)]
 
-def descartarCarta(carta, mazo, mano):
+def descartarCarta(carta, mazo, mano, descarte):
     mano.remove(carta)
+    descarte += [carta]
     if carta[0] == llave:
-        manejarProfecia(mazo)
+        manejarProfecia(mazo, descarte)
 
-def rellenarMano(mano, mazo, puertas):
+def rellenarMano(mano, mazo, puertas, descarte):
     limbo = []
     while len(mano) < 5:
         carta = mazo.pop()
         if carta[0] == puerta:
             limbo += manejarPuerta(mano, mazo, puertas, carta[1])
         elif carta == pesadilla:
-            limbo += manejarPesadilla(mano, puertas, mazo)
+            descarte += [carta]
+            limbo += manejarPesadilla(mano, puertas, mazo, descarte)
         else:
             mano += [carta]
     if limbo:
         mazo += limbo
         shuffle(mazo)
 
-def manejarPesadilla(mano, puertas, mazo):
+def menuPesadilla(mano, puertas):
     print("\nHas encontrado una pesadilla!")
     mostrarPila("Mano", mano)
     print("\n1 - Descartar 5 cartas del mazo")
@@ -85,8 +87,10 @@ def manejarPesadilla(mano, puertas, mazo):
         print("3 - Descartar una llave")
     if puertas:
         print("4 - Descartar una puerta")
-    opcion = int(input("Elija una opcion: "))
+    return int(input("Elija una opcion: "))
 
+def manejarPesadilla(mano, puertas, mazo, descarte):
+    opcion = menuPesadilla(mano, puertas)
     if opcion == 1:
         mostrarPila("\nMazo", mazo[-5:])
         limbo = []
@@ -94,15 +98,19 @@ def manejarPesadilla(mano, puertas, mazo):
             mazo.remove(carta)
             if carta == pesadilla or carta[0] == puerta:
                 limbo += [carta]
+            else:
+                descarte += [carta]
         input("Presione enter para cotinuar.")
         return limbo
     elif opcion == 2:
+        descarte += mano
         mano.clear()
         manoInicial(mazo, mano)
     elif opcion == 3:
         mostrarPila("Llaves", [carta for carta in mano if carta[0] == llave])
         color = input("Ingrese un color: ")
         mano.remove((llave, color))
+        descarte += [(llave, color)]
     else:
         mostrarPila("Puertas", puertas)
         color = input("Ingrese un color: ")
@@ -121,7 +129,8 @@ def manejarPuerta(mano, mazo, puertas, color):
 
     return [(puerta, color)]
 
-laberinto, puertas, mano, consecutivas = [], [], [], 0
+consecutivas = 0
+laberinto, puertas, mano, descarte = [], [], [], []
 manoInicial(mazo, mano)
 while len(puertas) != 8:
     carta, opcion = menuDeJuego(mazo, puertas, laberinto, mano)
@@ -138,6 +147,8 @@ while len(puertas) != 8:
             puertas += [(puerta, carta[1])]
             shuffle(mazo)
     elif opcion == 2:
-        descartarCarta(carta, mazo, mano)
+        descartarCarta(carta, mazo, mano, descarte)
 
-    rellenarMano(mano, mazo, puertas)
+    rellenarMano(mano, mazo, puertas, descarte)
+
+print("Ganaste!")
