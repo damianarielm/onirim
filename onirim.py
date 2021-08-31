@@ -33,7 +33,7 @@ def mostrarPila(nombre, pila):
 def menuDeJuego(mazo, puertas, laberinto, mano):
     borrarPantalla()
     print(f"Cartas restantes: {len(mazo)}.")
-    mostrarPila("Puertas", puertas)
+    mostrarPila("Puertas", [color for _, color in  puertas])
     mostrarPila("Laberinto", laberinto)
     mostrarPila("Mano", mano)
 
@@ -60,7 +60,7 @@ def manejarProfecia(mazo, descarte):
 def descartarCarta(carta, mazo, mano, descarte):
     mano.remove(carta)
     descarte += [carta]
-    if carta[0] == llave:
+    if carta[0] == llave and mazo:
         manejarProfecia(mazo, descarte)
 
 def rellenarMano(mano, mazo, puertas, descarte):
@@ -91,9 +91,9 @@ def menuPesadilla(mano, puertas):
 
 def manejarPesadilla(mano, puertas, mazo, descarte):
     opcion = menuPesadilla(mano, puertas)
+    limbo = []
     if opcion == 1:
         mostrarPila("\nMazo", mazo[-5:])
-        limbo = []
         for carta in mazo[-5:]:
             mazo.remove(carta)
             if carta == pesadilla or carta[0] == puerta:
@@ -101,7 +101,6 @@ def manejarPesadilla(mano, puertas, mazo, descarte):
             else:
                 descarte += [carta]
         input("Presione enter para cotinuar.")
-        return limbo
     elif opcion == 2:
         descarte += mano
         mano.clear()
@@ -115,9 +114,9 @@ def manejarPesadilla(mano, puertas, mazo, descarte):
         mostrarPila("Puertas", puertas)
         color = input("Ingrese un color: ")
         puertas.remove((puerta, color))
-        return [(puerta, color)]
+        limbo = [(puerta, color)]
 
-    return []
+    return limbo
 
 def manejarPuerta(mano, mazo, puertas, color):
     if (llave, color) in mano:
@@ -132,7 +131,7 @@ def manejarPuerta(mano, mazo, puertas, color):
 consecutivas = 0
 laberinto, puertas, mano, descarte = [], [], [], []
 manoInicial(mazo, mano)
-while len(puertas) != 8:
+while len(puertas) != 8 and mano:
     carta, opcion = menuDeJuego(mazo, puertas, laberinto, mano)
 
     if opcion == 1:
@@ -151,4 +150,4 @@ while len(puertas) != 8:
 
     rellenarMano(mano, mazo, puertas, descarte)
 
-print("\nGanaste!")
+print("\n{'Ganaste' if len(puertas) == 8 else 'Perdiste'}!")
