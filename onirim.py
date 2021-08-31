@@ -33,7 +33,7 @@ def mostrarPila(nombre, pila):
 def menuDeJuego(mazo, puertas, laberinto, mano):
     borrarPantalla()
     print(f"Cartas restantes: {len(mazo)}.")
-    mostrarPila("Puertas", [color for _, color in  puertas])
+    mostrarPila("Puertas", [(color, "") for _, color in  puertas])
     mostrarPila("Laberinto", laberinto)
     mostrarPila("Mano", mano)
 
