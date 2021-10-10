@@ -8,7 +8,7 @@ mazo =  [pesadilla] * 10
 mazo += [(puerta, azul)] * 2 + [(puerta, verde)] * 2
 mazo += [(puerta, roja)] * 2 + [(puerta, marron)] * 2
 mazo += [(sol, roja)] * 9 + [(luna, roja)] * 4 + [(llave, roja)] * 3
-mazo += [(sol, azul)] * 8 + [(luna, azul)] * 4 + [(llave, roja)] * 3
+mazo += [(sol, azul)] * 8 + [(luna, azul)] * 4 + [(llave, azul)] * 3
 mazo += [(sol, verde)] * 7 + [(luna, verde)] * 4 + [(llave, verde)] * 3
 mazo += [(sol, marron)] * 6 + [(luna, marron)] * 4 + [(llave, marron)] * 3
 shuffle(mazo)
